@@ -4,28 +4,38 @@
 
 resource "aws_s3_bucket" "this" {
     bucket = var.bucket_name
-    acl    = "public-read"
-    policy = file("${var.path}/policy.json")
+}
 
-    website {
-        index_document = "index.html"
-        error_document = "error.html"
+resource "aws_s3_bucket_website_configuration" "this" {
+    bucket = aws_s3_bucket.this.id
+
+    index_document {
+        suffix = "index.html"
+    }
+
+    error_document {
+        key = "error.html"
     }
 }
 
-resource "aws_s3_bucket_object" "html" {
+resource "aws_s3_bucket_acl" "this" {
+    bucket = aws_s3_bucket.this.id
+    acl    = "public-read"
+}
+
+resource "aws_s3_object" "html" {
     for_each     = toset(["index.html", "error.html"])
     
     key          = each.key
     bucket       = aws_s3_bucket.this.id
-    source       = "${var.path}/static website/${each.key}"
+    source       = "${var.path}/html/${each.key}"
     content_type = "text/html"
 }
 
-resource "aws_s3_bucket_object" "images" {
-    for_each = toset(["image1.png", "image2.png"])
+resource "aws_s3_object" "images" {
+    for_each = toset(["hortz.png", "pepe.png"])
 
-    key      = each.key
+    key      = "images/${each.key}"
     bucket   = aws_s3_bucket.this.id
     source   = "${var.path}/images/${each.key}"
 }

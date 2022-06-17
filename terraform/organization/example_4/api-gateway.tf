@@ -6,7 +6,7 @@ resource "aws_api_gateway_rest_api" "this" {
   provider = aws.aws
 
   name        = "AWSAPIGateway-${local.bucket_name}"
-  description = "This lab was created by the Cloud Computing team"
+  description = "This Gateway was created based on agnasillo terraform1o1"
 }
 
 resource "aws_api_gateway_resource" "this" {

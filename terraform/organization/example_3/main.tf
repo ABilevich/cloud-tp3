@@ -48,7 +48,7 @@ resource "aws_s3_object" "this" {
 
     bucket        = aws_s3_bucket.this.id
     key           = replace(each.value.filename, "html/", "") # remote path
-    source        = format("../../resources/%s", each.value.filename) # where is the file located
+    source        = format("%s/%s", local.s3.path, each.value.filename) # where is the file located
     content_type  = each.value.content_type
     storage_class = try(each.value.tier, "STANDARD")
 }

@@ -7,10 +7,11 @@ provider "aws" {
 
     default_tags {
         tags = {
-            author     = "Agustin Nasillo"
+            author     = "Grupo TP 3"
             version    = 1
             university = "ITBA"
-            subject    = "Cloud Computing" 
+            subject    = "Cloud Computing"
+            group      = 3
             created-by = "terraform"
         }
     }

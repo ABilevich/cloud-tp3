@@ -1,5 +1,5 @@
 locals {
-  bucket_name = "b123123123123-itba-cloud-computing"
+  bucket_name = "a211201d-81d3-475c-8452-ac5f6a3e43e8-cloud-tp3"
   path        = "../../resources"
 
   s3 = {
@@ -14,13 +14,13 @@ locals {
           filename     = "html/error.html"
           content_type = "text/html"
         }
-        image1 = {
-          filename     = "images/image1.png"
+        hortz = {
+          filename     = "images/hortz.png"
           content_type = "image/png"
         }
-        image2 = {
-          filename     = "images/image2.jpg"
-          content_type = "image/jpeg"
+        pepe = {
+          filename     = "images/pepe.png"
+          content_type = "image/png"
         }
       }
     }
