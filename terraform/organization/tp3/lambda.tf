@@ -6,7 +6,7 @@
 resource "aws_lambda_function" "this" {
   provider = aws.aws
 
-  filename      = "${local.path}/lambda/lambda.zip"
+  filename      = "${local.path.resources}/lambda/lambda.zip"
   function_name = local.lambda.name
   role          = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LabRole"
   handler       = "lambda_handler.main"

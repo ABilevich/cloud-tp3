@@ -15,7 +15,7 @@ module "aurora_postgresql_serverlessv2" {
   create_security_group = true
   allowed_cidr_blocks   = module.vpc.private_subnets_cidr_blocks
 
-  monitoring_interval = 60
+  # monitoring_interval = 60
 
   apply_immediately   = true
   skip_final_snapshot = true

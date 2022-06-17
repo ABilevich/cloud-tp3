@@ -1,13 +1,17 @@
+# ---------------------------------------------------------------------------
+# Amazon VPC resources
+# ---------------------------------------------------------------------------
+
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
   name = local.vpc.name
-  cidr = "10.0.0.0/16"
+  cidr = local.vpc.cidr
 
-  azs              = ["${local.region}a", "${local.region}b"]
-  public_subnets   = ["10.0.1.0/24", "10.0.2.0/24"]
-  private_subnets  = ["10.0.11.0/24", "10.0.12.0/24"]
-  database_subnets = ["10.0.21.0/24", "10.0.22.0/24"]
+  azs              = local.vpc.availability_zones
+  public_subnets   = local.vpc.public_subnets
+  private_subnets  = local.vpc.private_subnets
+  database_subnets = local.vpc.database_subnets
 
   enable_nat_gateway = false
   enable_vpn_gateway = false

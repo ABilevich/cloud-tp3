@@ -3,7 +3,6 @@
 # ---------------------------------------------------------------------------
 
 data "aws_iam_policy_document" "this" {
-
     statement {
         sid = "PublicReadGetObject"
         effect = "Allow"
