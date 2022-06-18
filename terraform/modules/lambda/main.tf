@@ -16,8 +16,8 @@ resource "aws_lambda_permission" "this" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = var.name
-  principal     = "apigateway.amazonaws.com" # TODO(matías): que sería esto?
+  principal     = "apigateway.amazonaws.com"
 
-  # TODO(matías): We have to replace arn I guess
-  source_arn = "arn:aws:execute-api:${var.aws_region}:${var.aws_caller_identity_account_id}:${var.api_gateway_id}/*/${var.method}${var.name}"
+  # source_arn = "arn:aws:execute-api:${var.aws_region}:${var.aws_caller_identity_account_id}:${var.api_gateway_id}/*/${var.method}${var.name}"
+  source_arn = "${var.api_gateway_execution_arn}/*/${var.method}/${var.path}"
 }

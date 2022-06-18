@@ -17,6 +17,11 @@ variable "api_gateway_id" {
   description = ""
 }
 
+variable "api_gateway_execution_arn" {
+  type        = string
+  description = ""
+}
+
 variable "filename" {
   type        = string
   description = ""

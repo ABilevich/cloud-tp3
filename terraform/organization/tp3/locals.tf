@@ -59,8 +59,6 @@ locals {
     }
   }
 
-  lambdas_filename = "${local.path.resources}/lambda/lambda.zip"
-
   openapi = {
     filename = "../../resources/openapi/hortz.yaml"
   }
@@ -70,14 +68,21 @@ locals {
   }
 
   lambda = {
+    zip_filename = "${local.path.resources}/lambda/lambda.zip"
     lambdas = {
       getUsers = {
-        filename = "${local.path.resources}/lambda/lambda.zip"
+        path     = "users"
         method   = "GET"
         name     = "lambda-getUsers-${local.name}"
-        handler  = "lambda_handler.main"
+        handler  = "getUsers.main"
         runtime  = "python3.9"
+      }
+      createUser = {
         path     = "users"
+        method   = "POST"
+        name     = "lambda-createUser-${local.name}"
+        handler  = "createUser.main"
+        runtime  = "python3.9"
       }
     }
   }

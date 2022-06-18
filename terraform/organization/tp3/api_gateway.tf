@@ -20,20 +20,56 @@ module "api_gateway" {
       version = "1.0"
     }
     paths = {
-      "/user" = {
+      # "/users" = {for k, v in module.lambda: 
+      #   k => {
+      #     x-amazon-apigateway-integration = {
+      #       httpMethod           = "POST"
+      #       payloadFormatVersion = "1.0"
+      #       type                 = "AWS_PROXY"
+      #       uri                  = ""
+      #     }
+      #   }
+      # }
+      "/users" = {
+        # options = {
+        #   x-amazon-apigateway-integration = {
+        #     httpMethod           = "OPTIONS"
+        #     type                 = "mock"
+        #     responses            = {
+        #       default = {
+        #         statusCode = "200"
+        #         responseParameters = {
+        #           "method.response.header.Content-Type" = "'application/json'"
+        #           "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'"
+        #           "method.response.header.Access-Control-Allow-Methods" = "'*'"
+        #           "method.response.header.Access-Control-Allow-Origin" = "'*'"
+        #         }
+        #       }
+        #     }
+        #   }
+        # }
         get = {
           x-amazon-apigateway-integration = {
-            httpMethod           = "GET"
+            httpMethod           = "POST"
             payloadFormatVersion = "1.0"
             type                 = "AWS_PROXY"
             uri                  = module.lambda["getUsers"].invoke_arn
+          }
+        }
+        post = {
+          x-amazon-apigateway-integration = {
+            httpMethod           = "POST"
+            payloadFormatVersion = "1.0"
+            type                 = "AWS_PROXY"
+            uri                  = module.lambda["createUser"].invoke_arn
           }
         }
       }
     }
   })
   api_template_vars = {
-    lambda_invoke_arn = module.lambda["getUsers"].invoke_arn
+    lambda_getUsers_arn = module.lambda["getUsers"].invoke_arn
+    # lambda_invoke_arn = module.lambda["getUsers"].invoke_arn
 
     # api_name = local.name
 

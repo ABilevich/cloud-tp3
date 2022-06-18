@@ -3,9 +3,16 @@
 # --------------------------------------------------------------------
 
 output "access_oai_path" {
-  value = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
+  description = "Cloudfront Access OAI Path"
+  value       = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
 }
 
 output "access_oai" {
-  value = aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn
+  description = "Cloudfront Access OAI"
+  value       = aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn
+}
+
+output "domain_name" {
+  description = "Cloudfront Domain Name"
+  value       = aws_cloudfront_distribution.this.domain_name
 }

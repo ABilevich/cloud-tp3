@@ -5,7 +5,7 @@ resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
   # comment = module.s3["website"].id
 }
 
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "this" {
   origin {
     domain_name = var.s3_domain_name
     origin_id   = var.s3_origin_id
