@@ -6,12 +6,9 @@ module "s3" {
   for_each = local.s3
   source   = "../../modules/s3_4.0"
 
-  providers = {
-    aws = aws.aws
-  }
-
-  bucket_name = each.value.bucket_name
-  objects     = try(each.value.objects, {})
+  bucket_name       = each.value.bucket_name
+  bucket_access_oai = [module.cloudfront.access_oai]
+  objects           = try(each.value.objects, {})
 }
 
 resource "aws_s3_object" "this" {

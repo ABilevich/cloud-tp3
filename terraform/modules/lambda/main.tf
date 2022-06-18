@@ -19,5 +19,5 @@ resource "aws_lambda_permission" "this" {
   principal     = "apigateway.amazonaws.com" # TODO(matías): que sería esto?
 
   # TODO(matías): We have to replace arn I guess
-  source_arn = "arn:aws:execute-api:${var.aws_region}:${var.aws_caller_identity_account_id}:${var.api_gateway_id}/*/${var.method}${var.path}"
+  source_arn = "arn:aws:execute-api:${var.aws_region}:${var.aws_caller_identity_account_id}:${var.api_gateway_id}/*/${var.method}${var.name}"
 }

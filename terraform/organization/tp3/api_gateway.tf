@@ -12,9 +12,35 @@ module "api_gateway" {
   api_name                   = local.api_gateway.name
   # api_throttling_rate_limit  = var.api_throttling_rate_limit
   # api_throttling_burst_limit = var.api_throttling_burst_limit
-  api_template               = file(local.openapi.filename)
+  # api_template               = file(local.openapi.filename)
+  api_template                 = jsonencode({
+    openapi = "3.0.1"
+    info = {
+      title   = "Example"
+      version = "1.0"
+    }
+    paths = {
+      "/user" = {
+        get = {
+          x-amazon-apigateway-integration = {
+            httpMethod           = "GET"
+            payloadFormatVersion = "1.0"
+            type                 = "AWS_PROXY"
+            uri                  = module.lambda["getUsers"].invoke_arn
+          }
+        }
+      }
+    }
+  })
   api_template_vars = {
-    region = data.aws_region.current.name
+    lambda_invoke_arn = module.lambda["getUsers"].invoke_arn
+
+    # api_name = local.name
+
+    # aws_region = data.aws_region.current.name
+    # aws_caller_identity_account_id = data.aws_caller_identity.current.account_id
+    # api_gateway_id = module.api_gateway.id
+
 
     # cognito_user_pool_arn = module.cognito.cognito_user_pool_arn
 

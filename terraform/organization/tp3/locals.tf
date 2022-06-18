@@ -71,13 +71,13 @@ locals {
 
   lambda = {
     lambdas = {
-      hortzIsBetter = {
+      getUsers = {
         filename = "${local.path.resources}/lambda/lambda.zip"
         method   = "GET"
-        name     = "lambda-hortzIsBetter-${local.name}"
+        name     = "lambda-getUsers-${local.name}"
         handler  = "lambda_handler.main"
         runtime  = "python3.9"
-        path     = "hortz"
+        path     = "users"
       }
     }
   }

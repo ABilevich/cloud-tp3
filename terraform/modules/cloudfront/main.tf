@@ -1,13 +1,17 @@
 # ---------------------------------------------------------------------------
 # Amazon Cloudfront
 # ---------------------------------------------------------------------------
+resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
+  # comment = module.s3["website"].id
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name = var.s3_domain_name
     origin_id   = var.s3_origin_id
 
     s3_origin_config {
-      origin_access_identity = var.s3_origin_access_identity
+      origin_access_identity = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
     }
   }
 
@@ -31,11 +35,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   comment             = "Some comment"
   default_root_object = "index.html"
 
-  logging_config {
-    include_cookies = false
-    bucket          = var.logs_s3_bucket_name
-    prefix          = var.logs_prefix
-  }
+  # TODO: Habilitar logs de nuevo (funcionaban)
+  # logging_config {
+  #   include_cookies = false
+  #   bucket          = var.logs_s3_bucket_name
+  #   prefix          = var.logs_prefix
+  # }
 
   aliases = var.aliases
 
