@@ -25,10 +25,6 @@ locals {
     waf_rule_group_metrics = "myFirstwafrulgroupmetrics"
   }
 
-  api_gateway = {
-    name = "api-gw-${local.name}"
-  }
-
   s3 = {
 
     # 1 - WWW Website
@@ -63,13 +59,25 @@ locals {
     }
   }
 
+  lambdas_filename = "${local.path.resources}/lambda/lambda.zip"
+
+  openapi = {
+    filename = "../../resources/openapi/hortz.yaml"
+  }
+
+  api_gateway = {
+    name = "api-gw-${local.name}"
+  }
+
   lambda = {
     lambdas = {
       hortzIsBetter = {
         filename = "${local.path.resources}/lambda/lambda.zip"
+        method   = "GET"
         name     = "lambda-hortzIsBetter-${local.name}"
         handler  = "lambda_handler.main"
         runtime  = "python3.9"
+        path     = "hortz"
       }
     }
   }

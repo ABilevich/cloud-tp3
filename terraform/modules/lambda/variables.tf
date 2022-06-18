@@ -17,18 +17,32 @@ variable "api_gateway_id" {
   description = ""
 }
 
-variable "api_gateway_http_method" {
+variable "filename" {
   type        = string
   description = ""
 }
 
-variable "api_gateway_resource_path" {
+variable "method" {
   type        = string
   description = ""
 }
 
-variable "lambdas" {
-  type        = map(any)
+variable "name" {
+  type        = string
   description = ""
-  default     = {}
+}
+
+variable "handler" {
+  type        = string
+  description = ""
+}
+
+variable "runtime" {
+  type        = string
+  description = ""
+}
+
+variable "path" {
+  type        = string
+  description = ""
 }

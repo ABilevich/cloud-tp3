@@ -1,0 +1,136 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Swagger Hortz
+  license:
+    name: MIT
+servers:
+  - url: http://petstore.swagger.io/v1
+paths:
+  /user:
+    options:
+      responses:
+        200:
+          $ref: '#/components/responses/cors'
+        500:
+          $ref: '#/components/responses/cors'
+      x-amazon-apigateway-integration:
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Max-Age: "'7200'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        passthroughBehavior: "when_no_match"
+        timeoutInMillis: 29000
+        requestTemplates:
+          application/json: "{ \"statusCode\": 200 }"
+        type: "mock"
+    get:
+      summary: Get all users
+      operationId: getUsers
+      tags:
+        - users
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: A paged array of users
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Users"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        x-amazon-apigateway-integration :
+          type: "aws",
+          uri: "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:012345678901:function:HelloWorld/invocations",
+          httpMethod: "POST",
+          credentials: "arn:aws:iam::012345678901:role/apigateway-invoke-lambda-exec-role"
+    post:
+      summary: Create a user
+      operationId: createUser
+      tags:
+        - users
+      responses:
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/{userId}:
+    get:
+      summary: Get a specific user
+      operationId: getUserById
+      tags:
+        - users
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The id of the user to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        tag:
+          type: string
+    Users:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
