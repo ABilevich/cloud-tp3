@@ -2,24 +2,13 @@
 # AWS Lambda resources
 # ---------------------------------------------------------------------------
 
-# Lambda
-resource "aws_lambda_function" "this" {
-  provider = aws.aws
+module "lambda" {
+  source = "../../modules/lambda"
 
-  filename      = "${local.path.resources}/lambda/lambda.zip"
-  function_name = local.lambda.name
-  role          = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LabRole"
-  handler       = "lambda_handler.main"
-  runtime       = "python3.9"
-}
-
-resource "aws_lambda_permission" "apigw_lambda" {
-  provider = aws.aws
-
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.this.function_name
-  principal     = "apigateway.amazonaws.com"
-
-  source_arn = "arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.this.id}/*/${aws_api_gateway_method.this.http_method}${aws_api_gateway_resource.this.path}"
+  lambdas                        = local.lambda.lambdas.hortzIsBetter # TODO(it is supposed to receive a map of lambdas)
+  aws_region                     = data.aws_region.current.name
+  aws_caller_identity_account_id = data.aws_caller_identity.current.id
+  api_gateway_id                 = module.api_gateway.id
+  api_gateway_http_method        = module.api_gateway.http_method
+  api_gateway_resource_path      = module.api_gateway.resource_path
 }

@@ -2,7 +2,6 @@ locals {
   # Run with env var: export TF_VAR_PREFIX="gabi"
   name   = "${var.name_prefix}-itba-2022-cloud-g3-tp3"
 
-  region         = "us-east-1" 
   path = {
     resources = "../../resources"
   }
@@ -10,7 +9,7 @@ locals {
   vpc = {
     name               = "vpc-${local.name}"
     cidr               = "10.0.0.0/16"
-    availability_zones = ["${local.region}a", "${local.region}b"]
+    availability_zones = ["${data.aws_region.current.name}a", "${data.aws_region.current.name}b"]
     public_subnets     = ["10.0.1.0/24", "10.0.2.0/24"]
     private_subnets    = ["10.0.11.0/24", "10.0.12.0/24"]
     database_subnets   = ["10.0.21.0/24", "10.0.22.0/24"]
@@ -65,7 +64,14 @@ locals {
   }
 
   lambda = {
-    name = "lambda-${local.name}"
+    lambdas = {
+      hortzIsBetter = {
+        filename = "${local.path.resources}/lambda/lambda.zip"
+        name     = "lambda-hortzIsBetter-${local.name}"
+        handler  = "lambda_handler.main"
+        runtime  = "python3.9"
+      }
+    }
   }
   
   aurora = {
@@ -75,11 +81,19 @@ locals {
     }
   }
 
+  dynamodb = {
+    name = "dynamodb-${local.name}"
+    tags = {
+      "Name": "Dynamo DB"
+    }
+  }
+
   cloudfront = {
     s3_domain_name = module.s3["website"].domain_name
     s3_origin_id   = "s3-bucket"
-    apigw_domain_name = aws_api_gateway_deployment.this.invoke_url
-    apigw_origin_id   = "api-gw"
+    apigw_domain_name = split("/", module.api_gateway.api_endpoint)[2] # TODO: Está horrible pero funcional
+    apigw_origin_id   = split("/", module.api_gateway.api_endpoint)[2]
+    apigw_origin_path = "/${split("/", module.api_gateway.api_endpoint)[length(split("/", module.api_gateway.api_endpoint))-1]}"
   }
   
 }

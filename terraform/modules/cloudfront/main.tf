@@ -11,17 +11,20 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
-  # origin {
-  #   domain_name = var.apigw_domain_name
-  #   origin_id   = var.apigw_origin_id
+  origin {
+    domain_name = var.apigw_domain_name
+    origin_id   = var.apigw_origin_id
+    origin_path = var.apigw_origin_path
 
-    # custom_origin_config {
-    #     origin_protocol_policy = "http-only"
-    #     origin_ssl_protocols = ["TLSv1.2"]
-    #     https_port = 443
-    #     http_port = 80
-    # }
-  # }
+    custom_origin_config {
+        origin_protocol_policy = "https-only"
+        origin_ssl_protocols = ["TLSv1.2"]
+        https_port = 443
+        http_port = 80
+    }
+  }
+
+  web_acl_id          = var.web_acl_id
 
   enabled             = true
   is_ipv6_enabled     = true
