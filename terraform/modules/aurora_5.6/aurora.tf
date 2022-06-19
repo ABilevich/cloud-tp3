@@ -37,15 +37,15 @@ module "aurora_postgresql_serverlessv2" {
 }
 
 resource "aws_db_parameter_group" "example_postgresql13" {
-  name        = "${local.name}-aurora-db-postgres13-parameter-group"
+  name        = "${local.app_name}-aurora-db-postgres13-parameter-group"
   family      = "aurora-postgresql13"
-  description = "${local.name}-aurora-db-postgres13-parameter-group"
+  description = "${local.app_name}-aurora-db-postgres13-parameter-group"
   tags        = local.aurora.tags
 }
 
 resource "aws_rds_cluster_parameter_group" "example_postgresql13" {
-  name        = "${local.name}-aurora-postgres13-cluster-parameter-group"
+  name        = "${local.app_name}-aurora-postgres13-cluster-parameter-group"
   family      = "aurora-postgresql13"
-  description = "${local.name}-aurora-postgres13-cluster-parameter-group"
+  description = "${local.app_name}-aurora-postgres13-cluster-parameter-group"
   tags        = local.aurora.tags
 }

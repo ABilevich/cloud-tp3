@@ -2,6 +2,11 @@
 # Amazon Cloudfront buckets output
 # --------------------------------------------------------------------
 
+output "distribution" {
+  description = "The cloudfront distribution"
+  value       = aws_cloudfront_distribution.this
+}
+
 output "access_oai_path" {
   description = "Cloudfront Access OAI Path"
   value       = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path

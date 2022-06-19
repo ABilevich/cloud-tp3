@@ -1,17 +1,12 @@
-output "api_gateway_endpoint" {
-  description = "API Gateway Endpoint"
-  value       = module.api_gateway.api_endpoint
-}
-
-output "cloudfront_endpoint" {
-  description = "Cloudfront Endpoint"
-  value       = module.cloudfront.domain_name
-}
-
-output "lambda_create_user_invoke_arn" {
-  value       = module.lambda["createUser"].invoke_arn
-}
-
-output "lambda_create_user_source_arn" {
-  value       = module.lambda["createUser"].source_arn
+output "app" {
+  description = "App"
+  value       = {
+    domain_name = local.app_domain_name
+    api_gateway = {
+      url = module.api_gateway.api_endpoint
+    }
+    cloudfront = {
+      url = module.cloudfront.domain_name
+    }
+  }
 }

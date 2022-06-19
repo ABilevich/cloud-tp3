@@ -49,3 +49,8 @@ variable "aliases" {
   description = "List of aliases."
   default     = []
 }
+
+variable "certificate_arn" {
+  type        = string
+  description = "Certificate ARN"
+}
