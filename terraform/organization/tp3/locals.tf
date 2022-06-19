@@ -77,25 +77,41 @@ locals {
     name = "api-gw-${local.app_name}"
   }
 
+  lambda_defaults = {
+    runtime        = "python3.9"
+    file_extension = "py"
+  }
+
   lambda = {
-    zip_filename = "${local.path.resources}/lambda/lambda.zip"
+    src_dir  = "${local.path.resources}/lambda/src"
+    zip_dir     = "${local.path.resources}/lambda/target"
+    zip_prefix  = "lamdba-"
+
+    name_prefix = "lambda-"
+
     lambdas = {
-      getUsers = {
-        path     = "users"
-        method   = "GET"
-        name     = "lambda-getUsers-${local.app_name}"
-        handler  = "getUsers.main"
-        runtime  = "python3.9"
+      "/hortz" = {
+        GET = "hortz"
       }
-      createUser = {
-        path     = "users"
-        method   = "POST"
-        name     = "lambda-createUser-${local.app_name}"
-        handler  = "createUser.main"
-        runtime  = "python3.9"
+      "/users" = {
+        GET = "getUsers"
+        POST = "createUser"
       }
     }
   }
+
+  lambda_endpoints = flatten([
+    for full_path, value in local.lambda.lambdas: flatten([
+      for method, function_name in value: {
+        "name"      = function_name
+        "filename"  = "${function_name}.${local.lambda_defaults.file_extension}"
+        "path"      = trimprefix(full_path, "/")
+        "full_path" = full_path
+        "method"    = method
+      }
+    ])
+  ])
+  lambdas_endpoints_iterable = { for idx, value in local.lambda_endpoints : value.name => value }
   
   aurora = {
     name = "aurora-rds-${local.app_name}"
@@ -104,11 +120,30 @@ locals {
     }
   }
 
+  dynamodb_defaults = {
+    billing_mode   = "PROVISIONED"
+    read_capacity  = "30"
+    write_capacity = "30"
+  }
+
   dynamodb = {
-    name_prefix = "dynamodb-"
     tables = {
-      cars = {
-        
+      users = {
+        billing_mode   = local.dynamodb_defaults.billing_mode
+        read_capacity  = local.dynamodb_defaults.read_capacity
+        write_capacity = local.dynamodb_defaults.write_capacity
+        hash_key       = "userId"
+        range_key      = "username"
+        attributes     = {
+          userId   = "S"
+          username = "S"
+        }
+        local_secondary_indexes            = {}
+        global_secondary_indexes           = {}
+        replica_regions                    = {}
+        server_side_encryption_enabled     = false # TODO: activate with a kms key arn
+        server_side_encryption_kms_key_arn = null
+        tags                               = {}
       }
     }
   }

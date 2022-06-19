@@ -11,3 +11,7 @@ output "app" {
     }
   }
 }
+
+# output "lambdas" {
+#   value = local.lambdas_endpoints_iterable
+# }

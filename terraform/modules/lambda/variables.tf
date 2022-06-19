@@ -27,6 +27,11 @@ variable "filename" {
   description = ""
 }
 
+variable "source_code_hash" {
+  type        = string
+  description = "" 
+} 
+
 variable "method" {
   type        = string
   description = ""

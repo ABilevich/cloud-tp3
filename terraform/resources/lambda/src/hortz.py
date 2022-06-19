@@ -1,6 +1,4 @@
-def main (event, context):
-	print ("In lambda handler")
-
+def handler(event, context):
 	resp = {
 		"statusCode": 200,
 		"headers": {

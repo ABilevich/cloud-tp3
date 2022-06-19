@@ -5,11 +5,12 @@
 # Lambda
 # TODO(matías): This should be a better version (for_each)
 resource "aws_lambda_function" "this" {
-  filename      = var.filename
-  function_name = var.name
-  role          = "arn:aws:iam::${var.aws_caller_identity_account_id}:role/LabRole"
-  handler       = var.handler
-  runtime       = var.runtime
+  filename         = var.filename
+  source_code_hash = var.source_code_hash
+  function_name    = var.name
+  role             = "arn:aws:iam::${var.aws_caller_identity_account_id}:role/LabRole"
+  handler          = var.handler
+  runtime          = var.runtime
 }
 
 resource "aws_lambda_permission" "this" {

@@ -6,11 +6,23 @@
         <div align="center">
             <!-- Esta es mi función -->
             <script>
-                function getImage() {
+                function whoIsHortz() {
                     var xhttp = new XMLHttpRequest();
                     xhttp.onreadystatechange = function () {
                         if (this.readyState == 4 && this.status == 200) {
-                            document.getElementById("replace").innerHTML = this.responseText;
+                            document.getElementById("h_title").innerHTML = this.responseText;
+                        }
+                    };
+
+                    xhttp.open("GET", "${ENDPOINT}/hortz", true);
+                    xhttp.send();   
+                }
+
+                function getUsers() {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            document.getElementById("h_users").innerHTML = this.responseText;
                         }
                     };
 
@@ -22,12 +34,13 @@
         <!-- Este es mi código -->
         <br><br>
         <body bgcolor="#FFFFFF" text="Black">
-            <h1><span id="replace">¡Bienvenidos, Hortzenses!</span></h1>
+            <h1><span id="h_title">¡Bienvenidos, Hortzenses!</span></h1>
             
-            <button onclick="getImage()">Pinchame</button>
+            <button onclick="whoIsHortz()">¿Quien es Hortz?</button>
             <br><br>
             <img src="images/hortz.png" width="200" height="200">
-
+            <button onclick="getUsers()">Alguien usa esto?</button>
+            <span id="h_users"></span>
             <p>Todo esto fue posible gracias a los apuntes de Gabi</p>
         </body>
     </div>

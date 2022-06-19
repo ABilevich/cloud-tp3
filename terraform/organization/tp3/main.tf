@@ -1,14 +1,4 @@
 # ---------------------------------------------------------------------------
-# Amazon AWS Certificate Manager
-# ---------------------------------------------------------------------------
-
-module "acm" {
-  source = "../../modules/acm"
-
-  app_domain_name = local.app_domain_name
-}
-
-# ---------------------------------------------------------------------------
 # Amazon Route53
 # ---------------------------------------------------------------------------
 
@@ -17,6 +7,16 @@ module "route53" {
 
   app_domain_name = local.app_domain_name
   cloudfront      = module.cloudfront.distribution
+}
+
+# ---------------------------------------------------------------------------
+# Amazon AWS Certificate Manager
+# ---------------------------------------------------------------------------
+
+module "acm" {
+  source = "../../modules/acm"
+
+  app_domain_name = local.app_domain_name
 }
 
 # ---------------------------------------------------------------------------
@@ -95,6 +95,16 @@ module "api_gateway" {
       #     }
       #   }
       # }
+      "/hortz" = {
+        get = {
+          x-amazon-apigateway-integration = {
+            httpMethod           = "POST"
+            payloadFormatVersion = "1.0"
+            type                 = "AWS_PROXY"
+            uri                  = module.lambda["hortz"].invoke_arn
+          }
+        }
+      }
       "/users" = {
         # options = {
         #   x-amazon-apigateway-integration = {
@@ -173,7 +183,7 @@ resource "aws_s3_object" "this" {
   provider = aws.aws
   bucket        = module.s3["website"].id
   key           = "index.html"
-  content       = data.template_file.userdata.rendered
+  content       = data.template_file.index_html.rendered
   content_type  = "text/html"
   storage_class = "STANDARD"
 }
@@ -207,7 +217,7 @@ module "vpc" {
 # ---------------------------------------------------------------------------
 
 module "lambda" {
-  for_each = local.lambda.lambdas
+  for_each = local.lambdas_endpoints_iterable
 
   source = "../../modules/lambda"
 
@@ -216,12 +226,14 @@ module "lambda" {
   api_gateway_id                 = module.api_gateway.id
   api_gateway_execution_arn      = module.api_gateway.execution_arn 
 
-  filename                       = local.lambda.zip_filename
+  filename                       = "${local.lambda.zip_dir}/${local.lambda.zip_prefix}${each.value.name}.zip"
+  # source_code_hash               = sha256(filebase64("${local.lambda.zip_dir}/${local.lambda.zip_prefix}${each.value.name}.zip"))
+  source_code_hash               = "${data.archive_file.lambda_zip[each.value.name].output_base64sha256}" 
   method                         = each.value.method
-  name                           = each.value.name
-  handler                        = each.value.handler
-  runtime                        = each.value.runtime
   path                           = each.value.path
+  name                           = "${local.lambda.name_prefix}${each.value.name}-${local.app_name}"
+  handler                        = "${each.value.name}.handler"
+  runtime                        = local.lambda_defaults.runtime
 }
 
 # ---------------------------------------------------------------------------
@@ -231,7 +243,5 @@ module "lambda" {
 module "dynamodb" {
   source = "../../modules/dynamodb"
 
-  name_prefix = local.dynamodb.name_prefix
-  app_name    = local.app_name
   tables      = local.dynamodb.tables
 }
