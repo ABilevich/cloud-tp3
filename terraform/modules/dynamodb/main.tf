@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Amazon DynamoDB resources
+# Amazon DynamoDB
 # ---------------------------------------------------------------------------
 
 # Still have to iterate properly for each attribute in table and so
